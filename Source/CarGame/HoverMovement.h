@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ChaosVehicles.h"
-#include "VehicleBase.generated.h"
+#include "ChaosVehicleMovementComponent.h"
+#include "HoverMovement.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CARGAME_API UVehicleBase : public UChaosVehicles
+class CARGAME_API UHoverMovement : public UChaosVehicleMovementComponent
 {
 	GENERATED_BODY()
 	
