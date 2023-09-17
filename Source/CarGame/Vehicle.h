@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "WheeledVehiclePawn.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
+#include "InputActionValue.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Vehicle.generated.h"
@@ -13,20 +15,38 @@ class CARGAME_API AVehicle : public AWheeledVehiclePawn
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = CarProperties, meta = (AllowPrivateAccess = "true"))
-	float Acceleration;
+
+	//FObjectInitializer ObjectInitializer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* RearCam;	
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = CarProperties, meta = (AllowPrivateAccess = "true"))
-	float Deceleration;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FrontCam;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* CameraComp;
-
+	class USpringArmComponent* RearSpringArmComp;	
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* SpringArmComp;
+	class USpringArmComponent* FrontSpringArmComp;
 
+	// Mapping the contols.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* TurnAction;
 
-	TObjectPtr<class UChaosVehicleMovementComponent> movement;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* AccelerateAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* BrakeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* DefaultMappingContext;
+	
+	TObjectPtr<class UChaosWheeledVehicleMovementComponent> movement;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,8 +62,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Accelerate(float Val);
-
-	void Decellerate(float Val);
-
+	void Accelerate(const FInputActionValue& Value);
+	void Brake(const FInputActionValue& Value);
+	void Turn(const FInputActionValue& Value);
+	UFUNCTION(BlueprintCallable, Category = "Input") 
+	void Fire();
 };
