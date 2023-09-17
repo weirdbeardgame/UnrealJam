@@ -65,6 +65,8 @@ public:
 	void Accelerate(const FInputActionValue& Value);
 	void Brake(const FInputActionValue& Value);
 	void Turn(const FInputActionValue& Value);
-	UFUNCTION(BlueprintCallable, Category = "Input") 
+	UFUNCTION(BlueprintImplementableEvent)
 	void Fire();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ActivatePowerup();
 };

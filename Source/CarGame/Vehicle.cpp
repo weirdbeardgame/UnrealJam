@@ -77,10 +77,6 @@ void AVehicle::Turn(const FInputActionValue& Value)
 	GetVehicleMovementComponent()->SetSteeringInput(Value.Get<float>());
 }
 
-void AVehicle::Fire()
-{
-}
-
 // Called to bind functionality to input
 void AVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
