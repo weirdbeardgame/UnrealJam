@@ -3,20 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WheeledVehiclePawn.h"
-#include "ChaosWheeledVehicleMovementComponent.h"
 #include "InputActionValue.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Vehicle.generated.h"
 
 UCLASS()
-class CARGAME_API AVehicle : public AWheeledVehiclePawn
+class CARGAME_API AVehicle : public ACharacter
 {
 	GENERATED_BODY()
-
-
-	//FObjectInitializer ObjectInitializer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* RearCam;	
@@ -30,27 +26,43 @@ class CARGAME_API AVehicle : public AWheeledVehiclePawn
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* FrontSpringArmComp;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	//UStaticMeshComponent* StaticMeshComp;
+
+	// Vehicle strength and stats
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Vehicle Stats")
+	float AccelerationStrength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Vehicle Stats")
+	float MaxSpeed;
+		
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Vehicle Stats")
+	float Gravity;
+
 	// Mapping the contols.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* TurnAction;
+	class UInputAction* TurnAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* AccelerateAction;
+	class UInputAction* AccelerateAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* BrakeAction;
+	class UInputAction* BrakeAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
+	class UInputAction* FireAction = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* DefaultMappingContext;
-	
-	TObjectPtr<class UChaosWheeledVehicleMovementComponent> movement;
+	class UInputMappingContext* DefaultMappingContext = nullptr;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	float CurSpeed;
+	float CurAccel;
+	float Steer;
 
 public:
 
@@ -65,6 +77,10 @@ public:
 	void Accelerate(const FInputActionValue& Value);
 	void Brake(const FInputActionValue& Value);
 	void Turn(const FInputActionValue& Value);
+	void Move(float DeltaTime);
+
+	void ApplyGravity(float DeltaTime);
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void Fire();
 	UFUNCTION(BlueprintImplementableEvent)
