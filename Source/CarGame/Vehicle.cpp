@@ -10,16 +10,6 @@ AVehicle::AVehicle()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	movement = FindComponentByClass<UChaosWheeledVehicleMovementComponent>();
-
-	movement->TorqueControl.Enabled = true;
-
-	//Super(ObjectInitializer.SetDefaultSubobjectClass(VehicleMovementComponentName, movement));
-	movement->SetUseAutomaticGears(true);
-	movement->SetTargetGear(2, true);
-	movement->bSuspensionEnabled = false;
-	movement->bWheelFrictionEnabled = false;
-	movement->SetParked(false);
 
 	RearSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("RearSpringArmComponent"));
 	RearSpringArmComp->SetupAttachment(RootComponent);
@@ -38,6 +28,9 @@ AVehicle::AVehicle()
 	FrontCam = CreateDefaultSubobject<UCameraComponent>(TEXT("FrontCam"));
 	FrontCam->SetupAttachment(FrontSpringArmComp, USpringArmComponent::SocketName);
 	FrontCam->bUsePawnControlRotation = false;
+
+	PowerUpSlot = CreateDefaultSubobject<UPowerUpSlot>(TEXT("PowerUpSlot"));
+	Health = CreateDefaultSubobject<UVehicleDurability>(TEXT("Health"));
 }
 
 // Called when the game starts or when spawned
@@ -58,27 +51,11 @@ void AVehicle::BeginPlay()
 void AVehicle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-void AVehicle::Accelerate(const FInputActionValue& Value)
+void AVehicle::ActivatePowerup()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Value.Get<float>()));
-	GetVehicleMovementComponent()->SetThrottleInput(Value.Get<float>());
-}
-
-void AVehicle::Brake(const FInputActionValue& Value)
-{
-	GetVehicleMovementComponent()->SetBrakeInput(Value.Get<float>());
-}
-
-void AVehicle::Turn(const FInputActionValue& Value)
-{
-	GetVehicleMovementComponent()->SetSteeringInput(Value.Get<float>());
-}
-
-void AVehicle::Fire()
-{
+	PowerUpSlot->ActivatePowerup();
 }
 
 // Called to bind functionality to input
@@ -90,5 +67,6 @@ void AVehicle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(AccelerateAction, ETriggerEvent::Triggered, this, &AVehicle::Accelerate);
 		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Triggered, this, &AVehicle::Brake);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AVehicle::Fire);
+		EnhancedInputComponent->BindAction(ActivatePowerAction, ETriggerEvent::Triggered, this, &AVehicle::ActivatePowerup);
 	}
 }
