@@ -10,8 +10,7 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"ChaosVehiclesEngine",
-				"ChaosVehicles"
+				"ChaosVehiclesEngine"
 			]
 		}
 	],
@@ -29,6 +28,10 @@
 		},
 		{
 			"Name": "ChaosVehiclesPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "AudioModulation",
 			"Enabled": true
 		}
 	]
